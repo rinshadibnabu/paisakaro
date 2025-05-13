@@ -53,8 +53,6 @@ export const authOptions = {
           console.log(e)
         }
 
-
-
         return null
       },
     })
