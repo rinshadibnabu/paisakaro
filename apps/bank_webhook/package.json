@@ -1,5 +1,5 @@
 {
-  "name": "bank-webhook_handler",
+  "name": "bank_webhook",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -11,10 +11,10 @@
   "license": "ISC",
   "dependencies": {
     "express": "^5.1.0",
-    "@repo/db": "workspace*"
+    "@repo/db": "workspace:*",
+    "@repo/typescript-config": "workspace:*"
   },
   "devDependencies": {
-    "@repo/typescript-config": "workspace*",
     "esbuild": "^0.25.4",
     "@types/express": "^5.0.1"
   }
