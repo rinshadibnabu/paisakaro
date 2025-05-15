@@ -1,5 +1,5 @@
 import { JSX } from "react/jsx-dev-runtime";
-import { SidebarItem } from "../../components/SideBarItem";
+import { SidebarItem } from "../components/SideBarItem";
 
 export default function Layout({
   children,

@@ -1,55 +1,70 @@
 import { prisma } from "@repo/db";
-import express, { Response, Request } from "express";
+import express from "express";
+import type { Response, Request } from "express";
+import z, { SafeParseError, SafeParseSuccess } from "zod";
 const app = express();
+app.use(express.json())
+
+const webhookSchema = z.object({
+  token: z.string(),
+  user_identifier: z.number(),
+  amount: z.number().positive(),
+});
+
 app.post("/hdfcWebhook", async (req: Request, res: Response) => {
-  //TODO: Add zod validation here?
-  const paymentInformation = {
-    token: req.body.token,
-    userId: req.body.user_identifier,
-    amount: req.body.amount
-  };
 
-  try {
-    await prisma.onRampTransaction.update({
-      where: {
-        token: paymentInformation.token
-      },
-      data: {
-        status: "Processing"
-      }
-    })
+  const parseResult = webhookSchema.safeParse(req.body);
 
-  } catch (error) {
-    res.status(500).json({
-      msg: "onRamp Processing update faled",
-      error: error
-    })
+  if (!parseResult.success) {
+    res.status(400).json({
+      msg: "Invalid request body",
+      error: parseResult.error.flatten(),
+    });
+    return
   }
 
+
+  const paymentInformation = {
+    token: parseResult.data.token,
+    userId: parseResult.data.user_identifier,
+    amount: parseResult.data.amount,
+  };
+  let balance = await prisma.balance.findUnique({
+    where: {
+      userId: paymentInformation.userId
+    }
+  })
+
   try {
-    await prisma.$transaction([
-      prisma.balance.update({
+
+    await prisma.$transaction(async (tx) => {
+      await tx.balance.upsert({
         where: {
           userId: paymentInformation.userId,
-
         },
-        data: {
+        update: {
           amount: {
             increment: paymentInformation.amount
           }
+        },
+        create: {
+          userId: Number(paymentInformation.userId),
+          amount: paymentInformation.amount,
+          locked: 0,
         }
       }),
 
-      prisma.onRampTransaction.update({
-        where: {
-          token: paymentInformation.token,
+        await tx.onRampTransaction.update({
+          where: {
+            token: paymentInformation.token,
 
-        },
-        data: {
-          status: "Success"
-        }
-      })
-    ])
+          },
+          data: {
+            status: "Success"
+          }
+        })
+
+    })
 
     res.status(200).json({
       msg: "captured"
@@ -65,9 +80,17 @@ app.post("/hdfcWebhook", async (req: Request, res: Response) => {
         status: "Failure"
       }
     })
+
     res.status(500).json({
       msg: "onTramp Success updatig failed",
-      error: e
+      error: e,
     })
   }
 })
+
+app.get("/health", async (req: Request, res: Response) => {
+  res.status(200).json({
+    msg: "server is up"
+  })
+})
+app.listen(3003)
