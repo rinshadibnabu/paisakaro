@@ -1,8 +1,8 @@
 import { prisma } from "@repo/db";
 import CredentialsProvider from "next-auth/providers/credentials"
 import bcrypt from "bcrypt";
-import { create } from "domain";
-
+import { DefaultSession, Session } from "next-auth";
+import { JWT } from "next-auth/jwt";
 export const authOptions = {
   providers: [
     CredentialsProvider({
@@ -11,10 +11,9 @@ export const authOptions = {
         phone: { label: "Phone number", type: "text", placeholder: "1231231231" },
         password: { label: "Password", type: "password" }
       },
-      // TODO: User credentials type from next-aut
       async authorize(credentials: any) {
-        // Do zod validation, OTP validation here
         try {
+
           let hashedPassword = await bcrypt.hash(credentials.password, 10);
           const existingUser = await prisma.user.findFirst({
             where: {
@@ -57,12 +56,16 @@ export const authOptions = {
       },
     })
   ],
+
   secret: process.env.JWT_SECRET || "secret",
   callbacks: {
-    // TODO: can u fix the type here? Using any is bad
-    async session({ token, session }: any) {
-      session.user.id = token.sub
 
+    async session({ token, session }: {
+      token: JWT, session: Session
+    }): Promise<Session> {
+      if (token.sub) {
+        session.user.id = token.sub
+      }
       return session
     }
   }
