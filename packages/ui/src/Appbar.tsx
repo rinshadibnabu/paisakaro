@@ -17,7 +17,7 @@ export const Appbar = ({
       PayTM
     </div>
     <div className="flex flex-col justify-center pt-2">
-      <Button onClick={user ? onSignout : onSignin}>{user ? "Logout" : "Login"}</Button>
+      <Button className="" onClick={user ? onSignout : onSignin}>{user ? "Logout" : "Login"}</Button>
     </div>
   </div>
 }
