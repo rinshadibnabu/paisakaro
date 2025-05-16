@@ -15,13 +15,15 @@ datasource db {
 }
 
 model User {
-  id                Int                 @id @default(autoincrement())
-  email             String?             @unique
-  name              String?
-  number            String              @unique
-  password          String
-  OnRampTransaction OnRampTransaction[]
-  Balance           Balance[]
+  id                   Int                 @id @default(autoincrement())
+  email                String?             @unique
+  name                 String?
+  number               String              @unique
+  password             String
+  OnRampTransaction    OnRampTransaction[]
+  Balance              Balance[]
+  sentTransactions     p2pTransfer[]       @relation(name: "senderRelation")
+  receivedTransactions p2pTransfer[]       @relation(name: "receiverRelation")
 }
 
 model OnRampTransaction {
@@ -41,6 +43,16 @@ model Balance {
   amount Int
   locked Int
   user   User @relation(fields: [userId], references: [id])
+}
+
+model p2pTransfer {
+  id            Int      @id @default(autoincrement())
+  amount        Int
+  timeStamp     DateTime
+  senderUserId  Int
+  sentUser      User     @relation(name: "senderRelation", fields: [senderUserId], references: [id])
+  receivrUserId Int
+  receivedUser  User     @relation(name: "receiverRelation", fields: [receivrUserId], references: [id])
 }
 
 enum OnRampStatus {

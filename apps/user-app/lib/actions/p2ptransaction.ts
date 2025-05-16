@@ -25,8 +25,7 @@ export async function p2pTansfer(recieverNumber: string, amount: number) {
   const session: Session | null = await getServerSession(authOptions)
   const senderId = session?.user.id
   const number = session?.user.email
-  console.log(number)
-  console.log(senderId)
+
   if (!session || !senderId) {
     return {
       success: false,
@@ -80,27 +79,28 @@ export async function p2pTansfer(recieverNumber: string, amount: number) {
             userId: Number(senderId)
           }
         })
+
+
         if (reciever === null || reciever.id === null) {
           return {
             success: false,
             message: "no sende found"
           }
         }
-        if (!senderBalance || senderBalance.amount < amount) {
+        if (!senderBalance) {
           return {
             success: false,
             message: "insuffient amount"
           }
         }
-        console.log("senderbalance done ")
-        //now i want to do like this because of updating the wallet without locking
-        //i avoided the serialize cause of locking all of the rows
-        // await tx.$queryRaw`
-        // BEGIN;
-        // SELECT amount FROM "Balance" WHERE userId ${senderId}
-        // SET amount = amount + ${amount}
-        // COMMIT
-        // FOR UPDATE`       
+
+        await tx.$queryRaw`SELECT * FROM "Balance" WHERE "userId" = ${Number(senderId)} FOR UPDATE`
+        if (senderBalance.amount < amount) {
+          return {
+            success: false,
+            message: "insuffient amount"
+          }
+        }
         await tx.balance.update(({
           where: {
             userId: Number(senderId)
@@ -111,8 +111,6 @@ export async function p2pTansfer(recieverNumber: string, amount: number) {
             }
           }
         }))
-        console.log("blaance update done for sender")
-        console.log()
         await tx.balance.upsert({
           where: {
             userId: Number(reciever.id)
@@ -129,25 +127,42 @@ export async function p2pTansfer(recieverNumber: string, amount: number) {
           }
         })
 
-        console.log("balance created or updated for reaciver")
-        // await tx.$queryRaw`
-        // BEGIN;
-        // SELECT amount FROM "Balance" WHERE userId ${recieverId}
-        // SET amount = amount - ${amount}
-        // COMMIT
-        // FOR UPDATE`       
 
+        try {
+          await tx.p2pTransfer.create({
+            data: {
+              timeStamp: new Date,
+              amount: amount,
+              senderUserId: Number(senderId),
+              receivrUserId: Number(reciever.id)
+            }
+          })
+
+        } catch (error) {
+
+          throw error
+
+        }
+
+        console.log("balance created or updated for reaciver")
       })
 
 
     } catch (error) {
+
       console.error("error while transaction")
-      console.log(error)
+      return {
+        success: false,
+        code: 500,
+        message: "interalSeval error"
+      }
     }
   } catch (error) {
     console.error("prisma error while finding uninque number")
-
+    return {
+      success: false,
+      code: 500,
+      message: "interalSeval error"
+    }
   }
 }
-
-
