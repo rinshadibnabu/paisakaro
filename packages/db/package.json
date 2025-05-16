@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "client.ts",
+  "prisma": {
+    "seed": "ts-node  prisma/seed.ts"
+  },
   "scripts": {
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev --skip-generate",
@@ -12,7 +15,9 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/node": "^22.15.3",
+    "bcrypt": "^5.1.1",
     "prisma": "^6.7.0"
   },
   "dependencies": {
