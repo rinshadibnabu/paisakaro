@@ -11,7 +11,6 @@ async function main() {
       number: '9999999999',
       password: hashedPassword1,
       name: 'alice',
-
       OnRampTransaction: {
         create: {
           startTime: new Date(),
@@ -21,6 +20,12 @@ async function main() {
           provider: "HDFC Bank",
         },
       },
+      Balance: {
+        create: {
+          amount: 100000,
+          locked: 0,
+        }
+      }
 
     },
   })

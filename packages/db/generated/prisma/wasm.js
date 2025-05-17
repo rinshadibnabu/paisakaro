@@ -128,6 +128,11 @@ exports.Prisma.UserScalarFieldEnum = {
   password: 'password'
 };
 
+exports.Prisma.RelationLoadStrategy = {
+  query: 'query',
+  join: 'join'
+};
+
 exports.Prisma.OnRampTransactionScalarFieldEnum = {
   id: 'id',
   status: 'status',
@@ -150,7 +155,7 @@ exports.Prisma.P2pTransferScalarFieldEnum = {
   amount: 'amount',
   timeStamp: 'timeStamp',
   senderUserId: 'senderUserId',
-  receivrUserId: 'receivrUserId'
+  receiverUserId: 'receiverUserId'
 };
 
 exports.Prisma.SortOrder = {
