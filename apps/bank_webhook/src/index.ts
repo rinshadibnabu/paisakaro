@@ -29,11 +29,36 @@ app.post("/hdfcWebhook", async (req: Request, res: Response) => {
     userId: parseResult.data.user_identifier,
     amount: parseResult.data.amount,
   };
-  let balance = await prisma.balance.findUnique({
-    where: {
-      userId: paymentInformation.userId
+
+
+  try {
+    let onTramp = await prisma.onRampTransaction.findUnique({
+      where: {
+        token: paymentInformation.token
+      }
+    })
+
+    if (!onTramp || onTramp.token !== paymentInformation.token) {
+      res.status(400).json({
+        msg: "Invalid token",
+        error: "token doesn't match",
+      });
+      return
     }
-  })
+
+
+
+    if (onTramp.status === 'Success') {
+      res.status(400).json({
+        msg: "succesfull onTramp transaction ",
+        error: "token doesn't match",
+      });
+      return
+    }
+
+  } catch (e) {
+    console.log(e)
+  }
 
   try {
 
@@ -71,7 +96,7 @@ app.post("/hdfcWebhook", async (req: Request, res: Response) => {
     })
 
   } catch (e) {
-
+    console.log(e)
     await prisma.onRampTransaction.update({
       where: {
         token: paymentInformation.token,
