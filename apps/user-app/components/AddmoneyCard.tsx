@@ -20,7 +20,7 @@ export const AddMoney = () => {
   const [amount, setAmount] = useState(0)
   const [provider, setProvider] = useState(SUPPORTED_BANKS[0]?.name)
 
-  return <Card title="Add Money">
+  return <Card title="Add Money to your wallet">
     <div className="w-full">
       <TextInput label={"Amount"} placeholder={"Amount"} onChange={(value) => {
         setAmount(Number(value) * 100)
@@ -36,7 +36,7 @@ export const AddMoney = () => {
         value: x.name
       }))} />
       <div className="flex justify-center pt-4">
-        <Button onClick={() => {
+        <Button className="" onClick={() => {
           createOnTrampTransaction(provider || "", amount)
         }}>
           Add Money

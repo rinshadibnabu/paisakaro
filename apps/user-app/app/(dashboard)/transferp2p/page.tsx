@@ -1,13 +1,8 @@
 import SendCard from '../../../components/sendCard'
-import { getBalance, getTransactionHistory } from '../../../lib/dbQureies'
 
 
 const TransferP2P = async () => {
-  let Balance = await getBalance()
-  let transactions = await getTransactionHistory()
-  console.log(transactions)
   return (
-
     <div className="w-screen">
       <div className="text-4xl text-[#6a51a6] pt-8 mb-8 font-bold">
         My Wallet

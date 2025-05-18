@@ -7,7 +7,7 @@ import { Session } from "next-auth"
 
 
 export async function p2pTansfer(recieverNumber: string, amount: number) {
-
+  console.log("reached here")
   if (!recieverNumber || isNaN(Number(recieverNumber))) {
     return {
       success: false,
@@ -134,7 +134,7 @@ export async function p2pTansfer(recieverNumber: string, amount: number) {
               timeStamp: new Date,
               amount: amount,
               senderUserId: Number(senderId),
-              receivrUserId: Number(reciever.id)
+              receiverUserId: Number(reciever.id)
             }
           })
 

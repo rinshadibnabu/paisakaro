@@ -24,8 +24,7 @@ export const SendCard = () => {
           <div className="flex justify-center items-center">
             <Button className="mt-4" onClick={() => {
               let stauts = p2pTansfer(number, amount)
-              setStatus("success")
-
+              console.log(status)
             }}>
               Send
             </Button>

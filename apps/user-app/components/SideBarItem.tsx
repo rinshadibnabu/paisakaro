@@ -4,7 +4,6 @@ import React from "react";
 
 export const SidebarItem = ({ href, title, icon }: { href: string; title: string; icon: React.ReactNode }) => {
   const router = useRouter();
-  console.log(router)
   const pathname = usePathname()
   const selected = pathname === href
 

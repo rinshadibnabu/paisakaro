@@ -6,12 +6,8 @@ import { authOptions } from "../auth";
 
 export async function createOnTrampTransaction(provider: string, amount: number): Promise<{ message: string }> {
   const session = await getServerSession(authOptions)
-  console.log(provider)
-  console.log(session)
+
   if (!session?.user) {
-    console.log(session?.user.id)
-    console.log(session?.user)
-    console.log("no user session")
     return {
       message: "unotharized request"
 
