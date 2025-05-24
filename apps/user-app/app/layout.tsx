@@ -1,12 +1,11 @@
 
 import "./globals.css";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+;
 import { Providers } from "./providers";
 import { AppbarClient } from "../components/AppbarClient";
 import { JSX } from "react/jsx-runtime";
 
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "PaisaKaro",
@@ -22,7 +21,7 @@ export default function RootLayout({
     <html lang="en">
       <Providers>
         <AppbarClient />
-        <body className={inter.className}>{children}</body>
+        <body >{children}</body>
       </Providers>
     </html>
   );

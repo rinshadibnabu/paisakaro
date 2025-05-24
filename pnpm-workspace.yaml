@@ -2,11 +2,12 @@ packages:
   - apps/*
   - packages/*
 onlyBuiltDependencies:
-  - '@parcel/watcher'
-  - '@prisma/client'
-  - '@prisma/engines'
-  - '@tailwindcss/oxide'
+  - "@parcel/watcher"
+  - "@prisma/client"
+  - "@prisma/engines"
+  - "@tailwindcss/oxide"
   - bcrypt
   - esbuild
   - prisma
   - sharp
+injectWorkspacePackages: false
